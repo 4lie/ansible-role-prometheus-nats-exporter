@@ -1,0 +1,5 @@
+---
+- name: restart prometheus-nats-exporter
+  service:
+    name: prometheus-nats-exporter
+    state: restarted

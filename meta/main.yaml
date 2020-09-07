@@ -1,0 +1,21 @@
+galaxy_info:
+  role_name: prometheus-nats-exporter
+  author: Rashad Ansari
+  description: Set up Prometheus NATS Exporter in Debian-like systems
+  company: 4lie
+  min_ansible_version: 2.6
+  platforms:
+    - name: Ubuntu
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - all
+  galaxy_tags:
+    - nats-streaming
+    - streaming
+    - messaging
+    - exporter
+    - prometheus
+
+dependencies: []

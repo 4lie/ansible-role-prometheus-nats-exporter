@@ -1,0 +1,3 @@
+prometheus_nats_exporter_version: "0.6.2"
+prometheus_nats_exporter_exec_parameters: "-channelz -connz -routez -serverz -subz -varz"
+prometheus_nats_exporter_nats_server_address: "http://127.0.0.1:8222"

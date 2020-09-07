@@ -1,0 +1,40 @@
+- name: Checking Prometheus NATS Exporter package is installed
+  shell: "dpkg-query -W -f='${Version}' prometheus-nats-exporter | grep {{ prometheus_nats_exporter_version }}"
+  register: is_prometheus_nats_exporter_installed
+  check_mode: no
+  failed_when: no
+  changed_when: no
+
+- name: Install Prometheus NATS Exporter package from GitHub
+  apt:
+    state: present
+    deb: "https://github.com/nats-io/prometheus-nats-exporter/releases/download/v{{ prometheus_nats_exporter_version }}/prometheus-nats-exporter-v{{ prometheus_nats_exporter_version }}-linux-amd64.deb"
+  when: is_prometheus_nats_exporter_installed.rc == 1
+
+- name: Create the Prometheus NATS Exporter user
+  user:
+    name: prometheus-nats-exporter
+    comment: "Prometheus NATS Exporter user (Ansible Managed)"
+    createhome: no
+    shell: "/usr/sbin/nologin"
+    system: "yes"
+
+- name: Ensure Prometheus NATS Exporter service file is available
+  template:
+    src: prometheus-nats-exporter.service.j2
+    dest: /etc/systemd/system/prometheus-nats-exporter.service
+    mode: 0644
+  register: nats_exporter_service_template
+
+- name: Reload systemd after adding Prometheus NATS Exporter service
+  systemd:
+    state: stopped
+    daemon_reload: true
+    name: prometheus-nats-exporter
+  when: nats_exporter_service_template.changed
+
+- name: Ensure Prometheus NATS Exporter service is started and enabled on boot
+  service:
+    name: prometheus-nats-exporter
+    state: started
+    enabled: true
